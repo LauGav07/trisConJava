@@ -2,14 +2,12 @@ import java.util.Scanner;
 public class Metodi {
     public static boolean ctrl = false;
     public static boolean part = true;
-    //static int x = 1;
-//static int o = -1;
     public static int conCosaGioca1 = 0;
     public static int conCosaGioca = 0;
+    public static int conCosaGiocaBot1 = 0;
     public static int trr = 0;
-
+    public static boolean rifare =true;
     public static void tris(){
-
         for(int riga=0; riga<Main.tris.length; riga++) {
             for(int colonna=0; colonna<Main.tris[0].length; colonna++) {
                 if (Main.tris[riga][colonna]==1) {
@@ -43,8 +41,15 @@ public class Metodi {
                 Main.tris[riga][colonna]=0;
             }
         }
+        ctrl = false;
+        part = true;
+        conCosaGioca1 = 0;
+        conCosaGioca = 0;
+        conCosaGiocaBot1 =0;
+        trr = 0;
+        rifare =true;
     }
-    public static void fine(){
+    public static void fine(int tipoDiGioco){
         part = true;
         for(int i=0; i<Main.tris.length; i++) {
             for(int j=0; j<Main.tris[0].length; j++) {
@@ -87,62 +92,70 @@ public class Metodi {
             trr=Main.tris[0][2] + Main.tris[1][2] + Main.tris[2][2];
         } else {ctrl = false;
         }
-        if(ctrl == true){
-            if ((trr<0 && conCosaGioca1<0)||(trr>0 && conCosaGioca1>0)) {
-                System.out.println("Ha vinto Giocatore1");
-            } else if((trr<0 && conCosaGioca1>0)||(trr>0 && conCosaGioca1<0)) {
-                System.out.println("Ha vinto Giocatore2");}
-        }
-        else if(part == true) {
-            System.out.println("pareggio");
+        if (tipoDiGioco==1) {
+            if (ctrl == true) {
+                if ((trr < 0 && conCosaGioca1 < 0) || (trr > 0 && conCosaGioca1 > 0)) {
+                    System.out.println("Ha vinto Giocatore1");
+                } else if ((trr < 0 && conCosaGioca1 > 0) || (trr > 0 && conCosaGioca1 < 0)) {
+                    System.out.println("Ha vinto Giocatore2");
+                }
+            } else if (part == true) {
+                System.out.println("pareggio");
+            }
+        } else if (tipoDiGioco==2){
+            if (ctrl == true) {
+                if ((trr < 0 && conCosaGioca < 0) || (trr > 0 && conCosaGioca > 0)) {
+                    System.out.println("Hai vinto");
+                } else if ((trr < 0 && conCosaGioca > 0) || (trr > 0 && conCosaGioca < 0)) {
+                    System.out.println("Hai perso");
+                }
+            } else if (part == true) {
+                System.out.println("pareggio");
+            }
+        } else if (tipoDiGioco==3){
+            if (ctrl == true) {
+                if ((trr < 0 && conCosaGiocaBot1 < 0) || (trr > 0 && conCosaGiocaBot1 > 0)) {
+                    System.out.println("Ha vinto Bot1");
+                } else if ((trr < 0 && conCosaGiocaBot1 > 0) || (trr > 0 && conCosaGiocaBot1 < 0)) {
+                    System.out.println("Ha vinto Bot2");
+                }
+            } else if (part == true) {
+                System.out.println("pareggio");
+            }
         }
     }
-    public static int chiediInt(int n) {
+    public static int chiediInt() {
         Scanner scanner = new Scanner(System.in);
         boolean f = false;
-        int valore= 0;
+        Integer valore;
+        System.out.println("inserisci valore : ");
         do {
             try {
-                valore = scanner.nextInt();
+                String frase = scanner.nextLine();
+                if (frase.equals("cambio")){
+                    valore= 10;
+                } else {
+                    try {
+                        valore = Integer.valueOf(frase);
+                    } catch (NumberFormatException ex) {
+                        System.out.println("valore impossibile");
+                        f=true;
+                        return chiediInt( );
+                    }
+                }
             }
             catch(Exception e){
                 System.out.println("valore impossibile");
                 f=true;
-                System.out.println("inserisci valore : ");
-                return chiediInt(n);
+                return chiediInt();
             }
         } while (f);
-        switch (valore) {
-            case -1:
-                if (n!=3) {
-                    return valore;
-                }
-                else{
-                    System.out.println("Scelta non corretta, riprova");
-                    return chiediInt(n);
-                }
-            case 0:
-                if (n==3) {
-                    return valore;
-                }
-                else{
-                    System.out.println("Scelta non corretta, riprova");
-                    return chiediInt(n);
-                }
-            case 1 :
-                return valore;
-            case 2:
-                if (n==3) {
-                    return valore;
-                }
-                else{
-                    System.out.println("Scelta non corretta, riprova");
-                    return chiediInt(n);
-                }
-            default :
-                System.out.println("Scelta non corretta, riprova");
-                return chiediInt(n);
-        }
+    if (valore == 0||valore == 1||valore == 2||valore == 10){
+        return valore;
+    } else{
+        System.out.println("Scelta non corretta, riprova");
+        return chiediInt();
+    }
     }
     public static int inizio(){
         int inizio = (int)(Math.random()*2);
@@ -150,5 +163,10 @@ public class Metodi {
             inizio = -1;
         }
         return inizio;
+    }
+    public static String chiedistringa() {
+        Scanner scanner = new Scanner(System.in);
+        String frase = scanner.nextLine();
+        return frase;
     }
 }
