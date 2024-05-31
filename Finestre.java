@@ -1,6 +1,5 @@
 import java.awt.*;
 import javax.swing.*;
-
 public class Finestre extends JFrame {
     static JButton uno = new JButton("Uno");
     static JButton due = new JButton("Due");
@@ -11,33 +10,35 @@ public class Finestre extends JFrame {
     static JButton sette = new JButton("Sette");
     static JButton otto = new JButton("Otto");
     static JButton nove = new JButton("Nove");
-
     public Finestre(String nome, int x, int y, String say) {
         super(nome);
         Container c = this.getContentPane();
         c.setLayout(new GridLayout(3, 3));
-        c.add(uno);
-        c.add(due);
-        c.add(tre);
-        c.add(quattro);
-        c.add(cinque);
-        c.add(sei);
-        c.add(sette);
-        c.add(otto);
-        c.add(nove);
+        JButton[] buttons = {uno, due, tre, quattro, cinque, sei, sette, otto, nove};
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                JButton button = buttons[i * 3 + j];
+                if (Main.tris[i][j] == 1) {
+                    button.setText("X");
+                } else if (Main.tris[i][j] == -1) {
+                    button.setText("O");
+                } else {
+                    button.setText(" ");
+                }
+                c.add(button);
+            }
+        }
         setSize(300, 300);
         setVisible(true);
     }
-
     public static void main(String[] args) {
         String say = "Con cosa vuoi giocare? 1 = x; -1 = o";
         Finestre finestra = new Finestre("Finestra", 10, 10, say);
-
         uno.addActionListener(e ->
-        {
-            int[] coordinate = {0, 0};
-            System.out.println("Coordinate del tasto Uno: (" + coordinate[0] + ", " + coordinate[1] + ")");
-        }
+                {
+                    int[] coordinate = {0, 0};
+                    System.out.println("Coordinate del tasto Uno: (" + coordinate[0] + ", " + coordinate[1] + ")");
+                }
         );
         due.addActionListener(e ->
                 {
@@ -87,8 +88,5 @@ public class Finestre extends JFrame {
                     System.out.println("Coordinate del tasto Uno: (" + coordinate[0] + ", " + coordinate[1] + ")");
                 }
         );
-
-
-        // Aggiungi azioni per gli altri pulsanti della tabella
     }
 }
