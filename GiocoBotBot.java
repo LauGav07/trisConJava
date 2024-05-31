@@ -1,159 +1,353 @@
-import java.util.Scanner;
-    public class GiocoBotBot  {
-        static boolean ctrl = false;
-        static boolean part = true;
-        //static int x = 1;
-//static int o = -1;
-        static int decisione = 0;
-        static int trr = 0;
-        static int [][] tris = new int[3][3];
-        public static void main(String[]args) {
-           // Metodi.svuota();
-
-            boolean rifare =true;
-            do {
-
-                tris();
-                svuota();
-                System.out.println("funziona");
-                rifare =rifare();
-                svuota();
-            } while (rifare==true);
-        }
-        public static void tris(){
-            for(int riga=0; riga<tris.length; riga++) {
-                for(int colonna=0; colonna<tris[0].length; colonna++) {
-                    if (tris[riga][colonna]==1) {
-                        System.out.print("X"+" ");
-                    }else if (tris[riga][colonna]==-1){
-                        System.out.print("O"+" ");
-                    }else {
-                        System.out.print(tris[riga][colonna]+" ");
-                    } }
-                System.out.println(" ");
-            }
-        }
-        public static boolean rifare(){
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("vuoi giocare ancora a questa modalità : [si] o [no]");
-            String decisione = scanner.nextLine();
-            decisione.toLowerCase();
-            if(decisione.equals("si")){
-                return true;
-            }
-            if (decisione.equals("no") ){
-                return false;
+public class GiocoBotBot  {
+    public static void main(String[]args) {
+        do {
+            Metodi.svuota();
+            Metodi.conCosaGiocaBot1 = Metodi.inizio();
+            if (Metodi.conCosaGiocaBot1==-1){
+                System.out.println("Il bot1 uno giocerà con O" );
+                System.out.println("Il bot2 uno giocerà con X" );
             } else {
-                System.out.println("cosa vuoi dalla mia vita?");
-                return rifare();
+                System.out.println("Il bot1 uno giocerà con X" );
+                System.out.println("Il bot2 uno giocerà con O" );
             }
-        }
-        public static void svuota(){
-            for(int riga=0; riga<tris.length; riga++) {
-                for(int colonna=0; colonna<tris[0].length; colonna++) {
-                    tris[riga][colonna]=0;
+            int turnoBot = 0;
+            Metodi.tris();
+            int inizio = Metodi.inizio();
+            System.out.println("turno di :"+inizio);
+            if (inizio == Metodi.conCosaGiocaBot1 ) {
+                do {
+                    turnoBot++;
+                    System.out.println("TURNO BOT1");
+                    bot(turnoBot,1);
+                    Metodi.tris();
+                    Metodi.fine(3);
+                    if (Metodi.ctrl == true || Metodi.part == true) {
+                        break;
+                    }
+                    System.out.println("TURNO BOT2");
+                    turnoBot++;
+                    bot(turnoBot,2);
+                    Metodi.tris();
+                    Metodi.fine(3);
+                }
+                while(!Metodi.ctrl && !Metodi.part);
+            }
+            else {
+                do {
+                    System.out.println("TURNO GIOCATORE2");
+                    turnoBot++;
+                    bot(turnoBot,1);
+                    Metodi.tris();
+                    Metodi.fine(3);
+                    if (Metodi.ctrl == true || Metodi.part == true) {
+                        break;
+                    }
+                    System.out.println("TURNO GIOCATORE1");
+                    turnoBot++;
+                    bot(turnoBot,2);
+                    Metodi.tris();
+                    Metodi.fine(3);
+                }while(Metodi.ctrl == false && Metodi.part == false);
+            }
+            Metodi.svuota();
+            Metodi.rifare =Metodi.rifare();
+        } while (Metodi.rifare==true);
+    }
+    public static int[] controlloStrategia() {
+        for (int i = 0 ; i < 3 ;i++) {
+            if(Main.tris[i][0] + Main.tris[i][1] + Main.tris[i][2]==Metodi.conCosaGiocaBot1*-2) {
+                for (int j = 0 ; j < 3 ;j++){
+                    if(Main.tris[i][j]==0){
+                        int coordinate[]={i,j};
+                        return  coordinate;
+                    }
                 }
             }
         }
-        /*  public static void fine(){
-             part = true;
-             for(int i=0; i<tris.length; i++) {
-                 for(int j=0; j<tris[0].length; j++) {
-                     if (tris[i][j] == 0) {
-                         part = false;
-      //partita in corso
-                     }
-                 }
-             }
-             if(Math.abs(tris[0][0] + tris[0][1] + tris[0][2])==3) {
-                 ctrl = true;
-                 trr=tris[0][0] + tris[0][1] + tris[0][2];
-             }
-             else if(Math.abs(tris[1][0] + tris[1][1] + tris[1][2])==3) {
-                 ctrl = true;
-                 trr=tris[1][0] + tris[1][1] + tris[1][2];
-             }
-             else if(Math.abs(tris[2][0] + tris[2][1] + tris[2][2])==3) {
-                 ctrl = true;
-                 trr=tris[2][0] + tris[2][1] + tris[2][2];
-             }
-             else if(Math.abs(tris[0][0] + tris[1][1] + tris[2][2])==3) {
-                 ctrl = true;
-                 trr=tris[0][0] + tris[1][1] + tris[2][2];
-             }
-             else if(Math.abs(tris[0][2] + tris[1][1] + tris[2][0])==3) {
-                 ctrl = true;
-                 trr=tris[0][2] + tris[1][1] + tris[2][0];
-             }
-             else if(Math.abs(tris[0][0] + tris[1][0] + tris[2][0])==3) {
-                 ctrl = true;
-                 trr=tris[0][0] + tris[1][0] + tris[2][0];
-             }
-             else if(Math.abs(tris[0][1] + tris[1][1] + tris[2][1])==3) {
-                 ctrl = true;
-                 trr=tris[0][1] + tris[1][1] + tris[2][1];
-             }
-             else if(Math.abs(tris[0][2] + tris[1][2] + tris[2][2])==3) {
-                 ctrl = true;
-                 trr=tris[0][2] + tris[1][2] + tris[2][2];
-             } else {ctrl = false;
-             }
-             if(ctrl == true){
-                 if ((trr<0 && decisione<0)||(trr>0 && decisione>0)) {
-                     System.out.println("vinto");
-                 } else if((trr<0 && decisione>0)||(trr>0 && decisione<0)) {
-                     System.out.println("perso");}
-             }
-             else if(part == true) {
-                 System.out.println("pareggio");
-             }
-         }*/
-        public static int chiediInt(int n) {
-            Scanner scanner = new Scanner(System.in);
-            boolean f = false;
-            int valore= 0;
-            do {
-                try {
-                    valore = scanner.nextInt();
+        for (int i = 0 ; i < 3 ;i++) {
+            if(Main.tris[0][i] + Main.tris[1][i] + Main.tris[2][i]==Metodi.conCosaGiocaBot1*-2) {
+                for (int j = 0 ; j < 3 ;j++){
+                    if(Main.tris[j][i]==0){
+                        int coordinate[]= {j, i};
+                        return  coordinate;
+                    }
                 }
-                catch(Exception e){
-                    System.out.println("valore impossibile");
-                    f=true;
-                    System.out.println("inserisci valore : ");
-                    return chiediInt(n);
-                }
-            } while (f);
-            switch (valore) {
-                case -1:
-                    if (n!=3) {
-                        return valore;
-                    }
-                    else{
-                        System.out.println("Scelta non corretta, riprova");
-                        return chiediInt(n);
-                    }
-                case 0:
-                    if (n==3) {
-                        return valore;
-                    }
-                    else{
-                        System.out.println("Scelta non corretta, riprova");
-                        return chiediInt(n);
-                    }
-                case 1 :
-                    return valore;
-                case 2:
-                    if (n==3) {
-                        return valore;
-                    }
-                    else{
-                        System.out.println("Scelta non corretta, riprova");
-                        return chiediInt(n);
-                    }
-                default :
-                    System.out.println("Scelta non corretta, riprova");
-                    return chiediInt(n);
             }
+        }
+        if(Main.tris[0][0] + Main.tris[1][1] + Main.tris[2][2]==Metodi.conCosaGiocaBot1*-2) {
+            for (int j = 0 ; j < 3 ;j++){
+                if(Main.tris[j][j]==0){
+                    int coordinate[]={j,j};
+                    return  coordinate;
+                }
+            }
+        }
+        else if (Main.tris[0][2] + Main.tris[1][1] + Main.tris[2][0]==Metodi.conCosaGiocaBot1*-2) {
+            for (int i = 2 ; i > -1 ;i--){
+                for (int j = 0 ; j < 3 ;j++){
+                    if(Main.tris[j][i]==0){
+                        int coordinate[]={j,i};
+                        return  coordinate;
+                    }
+                }
+            }
+        }
+        for (int i = 0 ; i < 3 ;i++) {
+            if(Math.abs(Main.tris[i][0] + Main.tris[i][1] + Main.tris[i][2])==2) {
+                for (int j = 0 ; j < 3 ;j++){
+                    if(Main.tris[i][j]==0){
+                        int coordinate[]={i,j};
+                        return  coordinate;
+                    }
+                }
+            }
+        }
+        for (int i = 0 ; i < 3 ;i++) {
+            if(Math.abs(Main.tris[0][i] + Main.tris[1][i] + Main.tris[2][i])==2) {
+                for (int j = 0 ; j < 3 ;j++){
+                    if(Main.tris[j][i]==0){
+                        int coordinate[]= {j, i};
+                        return  coordinate;
+                    }
+                }
+            }
+        }
+        if(Math.abs(Main.tris[0][0] + Main.tris[1][1] + Main.tris[2][2])==2) {
+            for (int j = 0 ; j < 3 ;j++){
+                if(Main.tris[j][j]==0){
+                    int coordinate[]={j,j};
+                    return  coordinate;
+                }
+            }
+        }
+        else if(Math.abs(Main.tris[0][2] + Main.tris[1][1] + Main.tris[2][0])==2) {
+            for (int i = 2 ; i > -1 ;i--){
+                for (int j = 0 ; j < 3 ;j++){
+                    if(Main.tris[j][i]==0){
+                        int coordinate[]={j,i};
+                        return  coordinate;
+                    }
+                }
+            }
+        }
+        int coordinate[]={1,1};
+        return  coordinate;
+    }
+    public static void bot(int turnoBot, int cosaGioca) {
+        int colonna1 =-1;
+        int riga1 =-1;
+        switch (turnoBot) {
+            case 1:
+                riga1 = 1;
+                colonna1 = 1;
+                break;
+            case 2:
+                if(Main.tris[1][1]==0) {
+                    riga1 = 1;
+                    colonna1 = 1;
+                } else{
+                    riga1 = (int) (Math.random() * 2);
+                    colonna1 = (int) (Math.random() * 2);
+                    if (riga1 == 1) { riga1 = 2; }
+                    if (colonna1 == 1) { colonna1 = 2;}
+                }
+                break;
+            case 3:
+                if ((Main.tris[0][0] == 0)&&(Main.tris[2][2] == 0)) {
+                    riga1 = (int) (Math.random() * 2);
+                    if (riga1 == 1) { riga1 = 2; }
+                    colonna1 =  riga1 ;
+                } else {
+                    riga1 = (int) (Math.random() * 2);
+                    if (riga1 == 1) { riga1 = 2; }
+                    if (riga1 == 2){colonna1 =  0;}
+                    else{colonna1 =  2;}
+                }
+                break;
+            case 4:
+                int g[] = controlloStrategia();
+                riga1 = g[0];
+                colonna1 = g[1];
+                if ((g[0] == 1) && (g[1] == 1)) {
+                    if ((Math.abs(Main.tris[0][0]) == 1)&& (Main.tris[2][2] == 0) ) {
+                        riga1 = 2;
+                        colonna1 = 2;
+                    } else if ((Math.abs(Main.tris[2][2]) == 1)&& (Main.tris[0][0] == 0) ) {
+                        riga1 = 0;
+                        colonna1 = 0;
+                    } else if (((Math.abs(Main.tris[2][0]) == 1)&& (Main.tris[0][2] == 0) )) {
+                        riga1 = 0;
+                        colonna1 = 2;
+                    } else if (((Math.abs(Main.tris[0][2]) == 1)&& (Main.tris[2][0] == 0) )) {
+                        riga1 = 2;
+                        colonna1 = 0;
+                    } else {
+                        riga1 = (int) (Math.random() * 3);
+                        colonna1 = (int) (Math.random() * 3);
+                    }
+                }
+                break;
+            case 5:
+                int v[] = controlloStrategia();
+                riga1 = v[0];
+                colonna1 = v[1];
+                if ((v[0] == 1) && (v[1] == 1)) {
+                    if (Math.abs(Main.tris[0][0]) == 1) {
+                        riga1 = 2;
+                        colonna1 = 2;
+                    } else if (Math.abs(Main.tris[2][2]) == 1) {
+                        riga1 = 0;
+                        colonna1 = 0;
+                    } else if (Math.abs(Main.tris[2][0]) == 1) {
+                        riga1 = 0;
+                        colonna1 = 2;
+                    } else if (Math.abs(Main.tris[0][2]) == 1) {
+                        riga1 = 2;
+                        colonna1 = 0;
+                    } else {
+                        riga1 = (int) (Math.random() * 3);
+                        colonna1 = (int) (Math.random() * 3);
+                    }
+                }
+                break;
+            case 6:
+                int p[] = controlloStrategia();
+                riga1 = p[0];
+                colonna1 = p[1];
+                if ((p[0] == 1) && (p[1] == 1)) {
+                    if ((Math.abs(Main.tris[0][0]) == 1)&&(Main.tris[2][2]==0)){
+                        riga1 = 2;
+                        colonna1 = 2;
+                    } else if ((Math.abs(Main.tris[2][2]) == 1)&&(Main.tris[0][0]==0)) {
+                        riga1 = 0;
+                        colonna1 = 0;
+                    } else if ((Math.abs(Main.tris[2][0]) == 1)&&(Main.tris[0][2]==0)) {
+                        riga1 = 0;
+                        colonna1 = 2;
+                    } else if ((Math.abs(Main.tris[0][2]) == 1)&&(Main.tris[2][0]==0)) {
+                        riga1 = 2;
+                        colonna1 = 0;
+                    } else {
+                        if (((Math.abs(Main.tris[0][0]) == 1)&&(Math.abs(Main.tris[2][2])==1))&&(Main.tris[0][2])==0){
+                            riga1 = 0;
+                            colonna1 = 2;
+                        } else if (((Math.abs(Main.tris[2][2]) == 1)&&(Math.abs(Main.tris[0][0])==1))&&(Main.tris[2][0])==0) {
+                            riga1 = 2;
+                            colonna1 = 0;
+                        } else if (((Math.abs(Main.tris[0][2]) == 1)&&(Math.abs(Main.tris[2][0])==1))&&(Main.tris[2][2])==0) {
+                            riga1 = 2;
+                            colonna1 = 2;
+                        } else if (((Math.abs(Main.tris[0][2]) == 1)&&(Math.abs(Main.tris[2][0])==1))&&(Main.tris[0][0])==0) {
+                            riga1 = 0;
+                            colonna1 = 0;
+                        } else {
+                            riga1 = (int) (Math.random() * 3);
+                            colonna1 = (int) (Math.random() * 3);
+                        }
+                    }
+                } break;
+            case 7:
+                int c[] = controlloStrategia();
+                riga1 = c[0];
+                colonna1 = c[1];
+                if ((c[0] == 1) && (c[1] == 1)) {
+                    if ((Math.abs(Main.tris[0][0]) == 1)&&(Main.tris[2][2]==0)){
+                        riga1 = 2;
+                        colonna1 = 2;
+                    } else if ((Math.abs(Main.tris[2][2]) == 1)&&(Main.tris[0][0]==0)) {
+                        riga1 = 0;
+                        colonna1 = 0;
+                    } else if ((Math.abs(Main.tris[2][0]) == 1)&&(Main.tris[0][2]==0)) {
+                        riga1 = 0;
+                        colonna1 = 2;
+                    } else if ((Math.abs(Main.tris[0][2]) == 1)&&(Main.tris[2][0]==0)) {
+                        riga1 = 2;
+                        colonna1 = 0;
+                    } else {
+                        if (((Math.abs(Main.tris[0][0]) == 1)&&(Math.abs(Main.tris[2][2])==1))&&(Main.tris[0][2])==0){
+                            riga1 = 0;
+                            colonna1 = 2;
+                        } else if (((Math.abs(Main.tris[2][2]) == 1)&&(Math.abs(Main.tris[0][0])==1))&&(Main.tris[2][0])==0) {
+                            riga1 = 2;
+                            colonna1 = 0;
+                        } else if (((Math.abs(Main.tris[0][2]) == 1)&&(Math.abs(Main.tris[2][0])==1))&&(Main.tris[2][2])==0) {
+                            riga1 = 2;
+                            colonna1 = 2;
+                        } else if (((Math.abs(Main.tris[0][2]) == 1)&&(Math.abs(Main.tris[2][0])==1))&&(Main.tris[0][0])==0) {
+                            riga1 = 0;
+                            colonna1 = 0;
+                        } else {
+                            riga1 = (int) (Math.random() * 3);
+                            colonna1 = (int) (Math.random() * 3);
+                        }
+                    }
+                }
+                break;
+            case 8:
+                int d[] = controlloStrategia();
+                riga1 = d[0];
+                colonna1 = d[1];
+                if ((d[0] == 1) && (d[1] == 1)) {
+                    if ((Math.abs(Main.tris[0][0]) == 1)&&(Main.tris[2][2]==0)){
+                        riga1 = 2;
+                        colonna1 = 2;
+                    } else if ((Math.abs(Main.tris[2][2]) == 1)&&(Main.tris[0][0]==0)) {
+                        riga1 = 0;
+                        colonna1 = 0;
+                    } else if ((Math.abs(Main.tris[2][0]) == 1)&&(Main.tris[0][2]==0)) {
+                        riga1 = 0;
+                        colonna1 = 2;
+                    } else if ((Math.abs(Main.tris[0][2]) == 1)&&(Main.tris[2][0]==0)) {
+                        riga1 = 2;
+                        colonna1 = 0;
+                    } else {
+                        if (((Math.abs(Main.tris[0][0]) == 1)&&(Math.abs(Main.tris[2][2])==1))&&(Main.tris[0][2])==0){
+                            riga1 = 0;
+                            colonna1 = 2;
+                        } else if (((Math.abs(Main.tris[2][2]) == 1)&&(Math.abs(Main.tris[0][0])==1))&&(Main.tris[2][0])==0) {
+                            riga1 = 2;
+                            colonna1 = 0;
+                        } else if (((Math.abs(Main.tris[0][2]) == 1)&&(Math.abs(Main.tris[2][0])==1))&&(Main.tris[2][2])==0) {
+                            riga1 = 2;
+                            colonna1 = 2;
+                        } else if (((Math.abs(Main.tris[0][2]) == 1)&&(Math.abs(Main.tris[2][0])==1))&&(Main.tris[0][0])==0) {
+                            riga1 = 0;
+                            colonna1 = 0;
+                        } else {
+                            riga1 = (int) (Math.random() * 3);
+                            colonna1 = (int) (Math.random() * 3);
+                        }
+                    }
+                }
+                break;
+            case 9:
+                int[] z = controlloStrategia();
+                riga1 = z[0];
+                colonna1 = z[1];
+                if ((z[0] == 1) && (z[1] == 1)) {
+                    riga1 = (int) (Math.random() * 3);
+                    colonna1 = (int) (Math.random() * 3);
+                    break;
+                } else {
+                    break;
+                }
+            default:
+                riga1 = (int) (Math.random() * 3);
+                colonna1 = (int) (Math.random() * 3);
+                break;
+        }
+        //IMPORTANTISSIMO NON TOCCARE
+        if(Main.tris[riga1][colonna1]==0) {
+            System.out.println("riga: " + riga1);
+            System.out.println("colonna: "+colonna1);
+            if (cosaGioca == 1){
+                Main.tris[riga1][colonna1] = Metodi.conCosaGiocaBot1;
+            }else{
+                Main.tris[riga1][colonna1] = Metodi.conCosaGiocaBot1 * -1;
+            }
+        } else {
+            bot(turnoBot, cosaGioca);
         }
     }
+}
 
